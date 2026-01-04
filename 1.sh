@@ -79,7 +79,7 @@ const puppeteer = require('puppeteer');
     });
 
     const page = await browser.newPage();
-    await page.goto('http://45.115.225.62', { waitUntil: 'networkidle2' });
+    await page.goto('https://tes-one-bay.vercel.app/', { waitUntil: 'networkidle2' });
 
     console.log('Browser running...');
     await new Promise(() => {}); // keep alive
