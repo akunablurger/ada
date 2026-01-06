@@ -1,23 +1,21 @@
 #!/bin/bash
 
-URL="https://tes-one-bay.vercel.app/"   # ganti kalau perlu
+URL="https://tes-one-bay.vercel.app/"
 
 echo "====================================================="
-echo "Membuka $URL dengan Chromium (Google Colab mode)"
+echo "Membuka $URL dengan Chromium (Google Colab FIXED)"
 echo "====================================================="
 
-# Colab sudah root → sudo tidak wajib, tapi aman
 apt-get update -qq
-apt-get install -y -qq chromium-browser curl
+apt-get install -y -qq chromium curl
 
 echo "Chromium version:"
-chromium-browser --version
+chromium --version
 
-# Hindari warning DBUS
 export NO_AT_BRIDGE=1
 export DBUS_SESSION_BUS_ADDRESS=/dev/null
 
-chromium-browser \
+chromium \
   --headless=new \
   --no-sandbox \
   --disable-dev-shm-usage \
@@ -38,7 +36,6 @@ CHROME_PID=$!
 echo "Chromium PID: $CHROME_PID"
 echo "Website dibuka (headless). Tunggu 1–2 menit."
 
-# Keep-alive loop
 while true; do
     sleep 60
     if ! kill -0 $CHROME_PID 2>/dev/null; then
