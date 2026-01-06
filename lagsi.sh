@@ -3,37 +3,35 @@
 URL="https://tes-one-bay.vercel.app/"
 
 echo "====================================================="
-echo "Google Colab Headless Browser via Playwright"
+echo "Google Colab Playwright Chromium (FIX DEPENDENCIES)"
 echo "Target: $URL"
 echo "====================================================="
 
-# Pastikan node ada (Colab biasanya sudah ada)
+# Pastikan Node.js ada
 if ! command -v node >/dev/null 2>&1; then
-  echo "[*] Node.js belum ada, install..."
+  echo "[*] Install Node.js..."
   curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
   apt-get install -y nodejs
 fi
 
-echo "[*] Node version:"
 node -v
 npm -v
 
-# Init project kalau belum ada
+# Init project
 if [ ! -f package.json ]; then
   npm init -y >/dev/null 2>&1
 fi
 
-# Install playwright kalau belum
+# Install Playwright
 if [ ! -d node_modules/playwright ]; then
-  echo "[*] Install Playwright..."
   npm install playwright
 fi
 
-# Download browser Playwright (INI KUNCI DI COLAB)
-echo "[*] Download Chromium Playwright..."
-npx playwright install chromium
+# 🔥 INI YANG PENTING (browser + dependency Linux)
+echo "[*] Install Chromium + system dependencies..."
+npx playwright install --with-deps chromium
 
-# Buat runner JS
+# Buat runner
 cat > run.js << 'EOF'
 const { chromium } = require('playwright');
 
@@ -55,10 +53,7 @@ const { chromium } = require('playwright');
   console.log('[*] Opening website...');
   await page.goto(process.env.TARGET_URL, { waitUntil: 'networkidle' });
 
-  console.log('[*] Website opened. Waiting 2 minutes...');
-  await page.waitForTimeout(120000);
-
-  console.log('[*] Keep alive loop started');
+  console.log('[*] Website opened. Keep alive...');
   while (true) {
     await page.waitForTimeout(60000);
     console.log('[KEEPALIVE]', new Date().toISOString());
@@ -68,5 +63,5 @@ EOF
 
 export TARGET_URL="$URL"
 
-echo "[*] Menjalankan browser..."
+echo "[*] Launching browser..."
 node run.js
